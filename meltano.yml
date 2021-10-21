@@ -1,0 +1,20 @@
+version: 1
+send_anonymous_usage_stats: true
+project_id: tap-typeform
+plugins:
+  extractors:
+  - name: tap-typeform
+    namespace: tap_typeform
+    executable: ./tap-typeform.sh
+    capabilities:
+    - state
+    - catalog
+    - discover
+    config:
+    settings:
+    - name: personal_access_token
+      kind: password
+  loaders:
+  - name: target-jsonl
+    variant: andyh1203
+    pip_url: target-jsonl
