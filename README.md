@@ -32,7 +32,7 @@ You will need to [create a personal access token for Typeform's API.](https://de
 ### Configuration
 ```json
 {
-    "personal_access_token": "ACCESS_KEY",
+    "personal_access_token": "ACCESS_TOKEN",
 }
 ```
 A bit of a run down on each of the properties:
