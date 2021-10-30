@@ -107,9 +107,10 @@ See the [dev guide](https://sdk.meltano.com/en/latest/dev_guide.html) for more i
 develop your own taps and targets.
 
 ## Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+For major changes, please open an issue first to discuss what you would like to change.
 
-Please make sure to update tests as appropriate.
+## Support
+If you enjoy this repository, please [star](https://docs.github.com/en/get-started/exploring-projects-on-github/saving-repositories-with-stars) this repository. By starring a repository, it shows appreciation to the repository maintainer for their work. Many of GitHub's repository rankings depend on the number of stars a repository has.
 
 ## License
 [MIT](LICENSE)
