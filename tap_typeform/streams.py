@@ -63,7 +63,7 @@ class QuestionsStream(TypeformStream):
     name = "questions"
     parent_stream_type = FormsStream  
     path = "/forms/{form_id}"
-    primary_keys = []
+    primary_keys = ["id"]
     replication_key = None
     schema = th.PropertiesList(
         th.Property("form_id", th.StringType),
@@ -93,10 +93,15 @@ class AnswersStream(TypeformStream):
     primary_keys = []
     replication_key = None
     schema = th.PropertiesList(
+        th.Property("form_id", th.StringType),
         th.Property("question_id", th.StringType),
         th.Property("data_type", th.StringType),
         th.Property("answer", th.StringType),
     ).to_dict()
+
+    def post_process(self, row: dict, context: Optional[dict] = None) -> Optional[dict]:
+        row["form_id"] = context["form_id"]
+        return row
 
     def parse_response(self, response: requests.Response) -> Iterable[dict]:
         """Parse the response and return an iterator of result rows."""
@@ -121,7 +126,7 @@ class AnswersStream(TypeformStream):
                         yield {
                             "question_id": answer.get('field').get('id'),
                             "data_type": data_type,
-                            "answer": answer_value
+                            "answer": answer_value,
                         }
         
         return None
