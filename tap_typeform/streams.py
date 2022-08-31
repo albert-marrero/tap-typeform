@@ -90,7 +90,7 @@ class AnswersStream(TypeformStream):
     name = "answers"
     parent_stream_type = FormsStream  
     path = "/forms/{form_id}/responses"
-    primary_keys = ["form_id", "question_id"]
+    primary_keys = ["form_id", "question_id", "response_id"]
     replication_key = None
     schema = th.PropertiesList(
         th.Property("form_id", th.StringType),
@@ -127,6 +127,7 @@ class AnswersStream(TypeformStream):
                             "question_id": answer.get('field').get('id'),
                             "data_type": data_type,
                             "answer": answer_value,
+                            "response_id": item['response_id']
                         }
         
         return None
