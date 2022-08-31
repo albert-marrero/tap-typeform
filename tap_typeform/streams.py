@@ -1,5 +1,5 @@
 """Stream type classes for tap-typeform."""
-
+import json
 import requests
 from pathlib import Path
 from typing import Any, Dict, Optional, Union, List, Iterable
