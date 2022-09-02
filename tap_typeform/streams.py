@@ -93,6 +93,7 @@ class AnswersStream(TypeformStream):
     primary_keys = ["form_id", "question_id", "response_id"]
     replication_key = None
     schema = th.PropertiesList(
+        th.Property("form_id", th.StringType),
         th.Property("response_id", th.StringType),
         th.Property("question_id", th.StringType),
         th.Property("data_type", th.StringType),
