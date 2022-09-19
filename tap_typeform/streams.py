@@ -1,5 +1,5 @@
 """Stream type classes for tap-typeform."""
-
+import json
 import requests
 from pathlib import Path
 from typing import Any, Dict, Optional, Union, List, Iterable
@@ -49,7 +49,7 @@ class FormsStream(TypeformStream):
 
         if page_count < previous_token:
             return None
-        
+
         return previous_token + 1
 
     def get_child_context(self, record: dict, context: Optional[dict]) -> dict:
@@ -61,9 +61,9 @@ class FormsStream(TypeformStream):
 class QuestionsStream(TypeformStream):
     """Define custom stream."""
     name = "questions"
-    parent_stream_type = FormsStream  
+    parent_stream_type = FormsStream
     path = "/forms/{form_id}"
-    primary_keys = []
+    primary_keys = ["id"]
     replication_key = None
     schema = th.PropertiesList(
         th.Property("form_id", th.StringType),
@@ -88,15 +88,21 @@ class QuestionsStream(TypeformStream):
 class AnswersStream(TypeformStream):
     """Define custom stream."""
     name = "answers"
-    parent_stream_type = FormsStream  
+    parent_stream_type = FormsStream
     path = "/forms/{form_id}/responses"
-    primary_keys = []
+    primary_keys = ["form_id", "question_id", "response_id"]
     replication_key = None
     schema = th.PropertiesList(
+        th.Property("form_id", th.StringType),
+        th.Property("response_id", th.StringType),
         th.Property("question_id", th.StringType),
         th.Property("data_type", th.StringType),
         th.Property("answer", th.StringType),
     ).to_dict()
+
+    def post_process(self, row: dict, context: Optional[dict] = None) -> Optional[dict]:
+        row["form_id"] = context["form_id"]
+        return row
 
     def parse_response(self, response: requests.Response) -> Iterable[dict]:
         """Parse the response and return an iterator of result rows."""
@@ -106,7 +112,7 @@ class AnswersStream(TypeformStream):
         if items:
             for item in items:
                 answers = item.get("answers")
-                
+
                 if answers:
                     for answer in answers:
                         data_type = answer.get('type')
@@ -117,13 +123,27 @@ class AnswersStream(TypeformStream):
                             answer_value = str(answer.get(data_type))
                         else:
                             answer_value = answer.get(data_type)
-                        
+
                         yield {
                             "question_id": answer.get('field').get('id'),
                             "data_type": data_type,
-                            "answer": answer_value
+                            "answer": answer_value,
+                            "response_id": item['response_id']
                         }
-        
+
         return None
 
-        
+
+    def get_url_params(
+        self, context: Optional[dict], next_page_token: Optional[Any]
+    ) -> Dict[str, Any]:
+        """Return a dictionary of values to be used in URL parameterization."""
+        params: dict = {
+            "page_size": 1000
+        }
+        if next_page_token:
+            params["page"] = next_page_token
+        if self.replication_key:
+            params["sort"] = "asc"
+            params["order_by"] = self.replication_key
+        return params
