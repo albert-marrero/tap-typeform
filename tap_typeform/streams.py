@@ -105,6 +105,7 @@ class AnswersStream(TypeformStream):
         th.Property("referer", th.StringType),
         th.Property("user_agent", th.StringType),
         th.Property("token", th.StringType),
+        th.Property("user_id", th.StringType),
     ).to_dict()
 
     def post_process(self, row: dict, context: Optional[dict] = None) -> Optional[dict]:
@@ -130,6 +131,7 @@ class AnswersStream(TypeformStream):
                             answer_value = str(answer.get(data_type))
                         else:
                             answer_value = answer.get(data_type)
+                        user_id = item.get('hidden', {}).get('user_id')
 
                         yield {
                             "question_id": answer.get('field').get('id'),
@@ -143,6 +145,7 @@ class AnswersStream(TypeformStream):
                             "referer": item['metadata']['referer'],
                             "user_agent": item['metadata']['user_agent'],
                             "token": item['token'],
+                            "user_id": user_id,
                         }
 
         return None
