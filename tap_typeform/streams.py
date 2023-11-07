@@ -91,7 +91,7 @@ class AnswersStream(TypeformStream):
     parent_stream_type = FormsStream
     path = "/forms/{form_id}/responses"
     primary_keys = ["form_id", "question_id", "response_id"]
-    replication_key = None
+    replication_key = "submitted_at"
     schema = th.PropertiesList(
         th.Property("form_id", th.StringType),
         th.Property("response_id", th.StringType),
@@ -161,6 +161,6 @@ class AnswersStream(TypeformStream):
         if next_page_token:
             params["page"] = next_page_token
         if self.replication_key:
-            params["sort"] = "asc"
-            params["order_by"] = self.replication_key
+            params["sort"] = f"{self.replication_key},asc"
+            params["since"] = self.get_starting_replication_key_value(context)
         return params

@@ -42,6 +42,7 @@ class TypeformStream(RESTStream):
     ) -> Dict[str, Any]:
         """Return a dictionary of values to be used in URL parameterization."""
         params: dict = {}
+        params["page_size"] = 200
         if next_page_token:
             params["page"] = next_page_token
         if self.replication_key:
