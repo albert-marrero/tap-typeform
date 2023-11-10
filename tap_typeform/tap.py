@@ -30,6 +30,10 @@ class TapTypeform(Tap):
             required=True,
             description="Your personal access token for Typeform's API."
         ),
+        th.Property(
+            "forms_ids_list",
+            th.StringType,
+        ),
     ).to_dict()
 
     def discover_streams(self) -> List[Stream]:

@@ -28,6 +28,10 @@ class FormsStream(TypeformStream):
         data = response.json()
         forms = data.get("items")
 
+        if forms_ids := self.config.get("forms_ids_list"):
+            forms_ids = forms_ids.split(',')
+            forms = [form for form in forms if form['id'] in forms_ids ]
+
         for form in forms:
             yield {
                 "id": form.get("id"),
