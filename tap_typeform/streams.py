@@ -110,7 +110,7 @@ class AnswersStream(TypeformStream):
         th.Property("user_agent", th.StringType),
         th.Property("token", th.StringType),
         th.Property("user_id", th.StringType),
-        th.Property("nps_scores_id", th.StringType),
+        th.Property("nps_score_id", th.StringType),
     ).to_dict()
 
     def post_process(self, row: dict, context: Optional[dict] = None) -> Optional[dict]:
@@ -137,7 +137,7 @@ class AnswersStream(TypeformStream):
                         else:
                             answer_value = answer.get(data_type)
                         user_id = item.get('hidden', {}).get('user_id')
-                        nps_scores_id = item.get('hidden', {}).get('nps_scores_id')
+                        nps_score_id = item.get('hidden', {}).get('nps_score_id')
 
                         yield {
                             "question_id": answer.get('field').get('id'),
@@ -152,7 +152,7 @@ class AnswersStream(TypeformStream):
                             "user_agent": item['metadata']['user_agent'],
                             "token": item['token'],
                             "user_id": user_id,
-                            "nps_scores_id": nps_scores_id,
+                            "nps_score_id": nps_score_id,
                         }
 
         return None
